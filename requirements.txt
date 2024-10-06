@@ -1,0 +1,13 @@
+fastapi[standard]==0.115.0
+numpy==1.26.4
+opencv-python==4.10.0.84
+ultralytics==8.2.81
+supervision==0.23.0
+scikit-learn==1.5.1
+pandas==2.2.2
+uvicorn==0.30.6
+python-multipart==0.0.10
+pydantic==2.9.2
+torch==2.4.0
+torchvision==0.19.0
+scikit-video==1.1.11

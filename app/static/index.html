@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Processing</title>
+</head>
+<body>
+    <h1>Upload a Video File</h1>
+
+    <form id="uploadForm" action="/convert/" method="post" enctype="multipart/form-data">
+        <label for="file">Choose a video (MP4 only):</label>
+        <input type="file" id="file" name="file" accept=".mp4" required>
+        <button type="submit">Upload</button>
+    </form>
+
+    <div id="response"></div>
+
+    <script>
+        // Handle form submission
+        document.getElementById('uploadForm').onsubmit = async function(event) {
+            event.preventDefault();  // Prevent page reload
+
+            const formData = new FormData(this);
+
+            try {
+                const response = await fetch(this.action, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const result = await response.blob();  // Get the blob response
+                    const url = URL.createObjectURL(result); // Create a URL for the blob
+                    const downloadLink = `<a href="${url}" download="processed_video.avi">Download Processed Video</a>`;
+                    document.getElementById('response').innerHTML = downloadLink;
+                } else {
+                    document.getElementById('response').innerText = 'Error processing file.';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('response').innerText = 'Error uploading file.';
+            }
+        };
+    </script>
+</body>
+</html>

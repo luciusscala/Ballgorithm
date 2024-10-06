@@ -1,8 +1,8 @@
 from ultralytics import YOLO # type: ignore
 
-model = YOLO('models/best.pt')
+model = YOLO('best.pt')
 
-results = model.predict('input_videos/main.mp4', save=True)
+results = model.predict('1001.mp4', save=True)
 
 print(results[0])
 print('=======================')

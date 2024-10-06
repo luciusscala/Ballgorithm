@@ -1,5 +1,6 @@
 from fastapi import FastAPI, File, UploadFile
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.staticfiles import StaticFiles
 import os
 from utils import read_video, save_video
 from trackers import Tracker
@@ -10,6 +11,7 @@ from player_ball_assigner import PlayerBallAssigner
 from camera_movement_estimator import CameraMovementEstimator
 from view_tranformer import ViewTransformer
 from speed_and_distance_estimator import SpeedAndDistanceEstimator
+from random import randint
 
 app = FastAPI()
 
@@ -22,6 +24,14 @@ if not os.path.exists(UPLOAD_FOLDER):
 
 if not os.path.exists(OUTPUT_FOLDER):
     os.makedirs(OUTPUT_FOLDER)
+
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
+
+# Serve the HTML homepage
+@app.get("/", response_class=HTMLResponse)
+async def read_home():
+    with open("app/static/index.html") as f:  # Adjust the path as necessary
+        return f.read()
 
 
 @app.post('/convert/')
@@ -55,7 +65,7 @@ def main(input_path, output_path):
     #intepret camera movement
     camera_movement_estimator = CameraMovementEstimator(video_frames[0])
     camera_movement_per_frame = camera_movement_estimator.get_camera_movement(video_frames,
-                                                                              read_from_stub=True,
+                                                                              read_from_stub=False,
                                                                               stub_path='stubs/camera_movement_stub.pkl')
     
     camera_movement_estimator.add_adjusted_position_to_tracks(tracks, camera_movement_per_frame)
@@ -94,7 +104,10 @@ def main(input_path, output_path):
             tracks['players'][frame_num][assigned_player]['has_ball'] = True
             team_ball_control.append(tracks['players'][frame_num][assigned_player]['team'])
         else:
-            team_ball_control.append(team_ball_control[-1])
+            if team_ball_control:
+                team_ball_control.append(team_ball_control[-1])
+            else:
+                team_ball_control.append(randint(1,2))
         
     
     team_ball_control = np.array(team_ball_control)

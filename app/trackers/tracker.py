@@ -47,6 +47,7 @@ class Tracker():
 
 
         detections = self.detect_frames(frames)
+        print(detections)
 
         tracks = {
             'players':[],
@@ -177,6 +178,7 @@ class Tracker():
         cv2.addWeighted(overlay, alpha, frame, 1-alpha, 0, frame)
 
         team_ball_control_till_frame = team_ball_control[:frame_num+1]
+        
 
         team_1_num_frames = team_ball_control_till_frame[team_ball_control_till_frame==1].shape[0]
         team_2_num_frames = team_ball_control_till_frame[team_ball_control_till_frame==2].shape[0]
