@@ -54,11 +54,11 @@ async def convert_video(file: UploadFile = File(...)):
 def main(input_path, output_path):
     video_frames = read_video(input_path)
 
-    tracker = Tracker('models/best.pt')
+    tracker = Tracker('app/models/best.pt')
 
     tracks = tracker.get_object_tracks(video_frames,
                                         read_from_stub=False,
-                                        stub_path='stubs/track_stubs.pkl')
+                                        stub_path='app/stubs/track_stubs.pkl')
     
     tracker.add_position_to_tracks(tracks)
     
@@ -66,7 +66,7 @@ def main(input_path, output_path):
     camera_movement_estimator = CameraMovementEstimator(video_frames[0])
     camera_movement_per_frame = camera_movement_estimator.get_camera_movement(video_frames,
                                                                               read_from_stub=False,
-                                                                              stub_path='stubs/camera_movement_stub.pkl')
+                                                                              stub_path='app/stubs/camera_movement_stub.pkl')
     
     camera_movement_estimator.add_adjusted_position_to_tracks(tracks, camera_movement_per_frame)
 
@@ -77,7 +77,7 @@ def main(input_path, output_path):
     #predict ball positions when empty
     tracks['ball'] = tracker.interpolate_ball_positions(tracks['ball'])
     
-    #add spead and distance
+    #add spead and dista        nce
     speed_and_distance_estimator = SpeedAndDistanceEstimator()
     speed_and_distance_estimator.add_speed_and_distance_to_tracks(tracks)
     
